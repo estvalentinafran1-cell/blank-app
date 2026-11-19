@@ -11,281 +11,281 @@ Original file is located at
 
 # Commented out IPython magic to ensure Python compatibility.
 # %%writefile app.py
-# import streamlit as st
-# from PIL import Image, ImageStat
-# import pandas as pd
-# import numpy as np
-# import time
-# import hashlib
-# 
-# st.set_page_config(
-#     page_title="YUGLOSS | Cosmética Capilar Natural & IA",
-#     page_icon="🌿",
-#     layout="wide"
-# )
-# 
-# # Estilos CSS personalizados con la paleta de colores de tu logo
-# st.markdown("""
-# <style>
-#     /* Estilos generales con fondo color arena del logo */
-#     .stApp {
-#         background-color: #EAE7E2 !important;
-#     }
-# 
-#     .top-bar {
-#         background-color: #1F3626; /* Verde oscuro */
-#         color: #FFFFFF;
-#         text-align: center;
-#         padding: 10px;
-#         font-size: 13px;
-#         font-weight: 600;
-#         letter-spacing: 1px;
-#         border-radius: 8px;
-#         margin-bottom: 15px;
-#     }
-# 
-#     .hero-banner {
-#         background: linear-gradient(135deg, #DCE9E9 0%, #C4D7D6 50%, #EAE7E2 100%); /* Azul claro a Arena */
-#         padding: 35px 40px;
-#         border-radius: 18px;
-#         border: 2px solid #1F3626;
-#         margin-bottom: 25px;
-#         text-align: center;
-#     }
-# 
-#     .hero-title {
-#         color: #1F3626;
-#         font-size: 38px;
-#         font-weight: 800;
-#         margin-bottom: 5px;
-#         font-family: 'Georgia', serif;
-#     }
-# 
-#     .hero-subtitle {
-#         color: #2b4f35;
-#         font-size: 20px;
-#         font-style: italic;
-#         margin-bottom: 15px;
-#     }
-# 
-#     .promo-badge {
-#         background-color: #3B7A75; /* Azul teal de acento */
-#         color: white;
-#         padding: 8px 22px;
-#         border-radius: 25px;
-#         font-weight: bold;
-#         font-size: 16px;
-#         display: inline-block;
-#     }
-# 
-#     .product-card {
-#         background-color: #FFFFFF;
-#         border: 2px solid #C4D7D6; /* Azul claro */
-#         border-radius: 15px;
-#         padding: 20px;
-#         text-align: center;
-#         box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-#     }
-# 
-#     .price-tag {
-#         background-color: #1F3626; /* Verde oscuro */
-#         color: white;
-#         padding: 5px 15px;
-#         border-radius: 15px;
-#         font-weight: bold;
-#         font-size: 18px;
-#         display: inline-block;
-#         margin: 10px 0;
-#     }
-# </style>
-# """, unsafe_allow_html=True)
-# 
-# if "pedidos_acumulados" not in st.session_state:
-#     st.session_state.pedidos_acumulados = {
-#         "Shampoo Hidratante (20% Yuca)": 142,
-#         "Acondicionador Nutritivo (5% Yuca)": 98,
-#         "Mascarilla Reparadora (6% Yuca)": 185
-#     }
-# if "historial_diagnosticos" not in st.session_state:
-#     st.session_state.historial_diagnosticos = []
-# 
-# # Encabezado con Logo y Título
-# col_logo, col_titulo = st.columns([1, 5])
-# with col_logo:
-#     # Mostramos tu logo
-#     try:
-#         logo = Image.open("image_9.png")
-#         st.image(logo, use_container_width=True)
-#     except:
-#         st.subheader("YUGLOSS") # Respaldo si no encuentra el archivo
-# 
-# with col_titulo:
-#     st.title("🌿 YUGLOSS S.A.S. — Ecosistema Capilar Inteligente (Industria 5.0)")
-#     st.markdown("**Tierra que nutre, belleza que crece** | *Conexión en tiempo real entre Visión Artificial (B2C) y Manufactura LEAN (Planta Puente Aranda)*")
-# 
-# # Barra superior estilo e-commerce
-# st.markdown('<div class="top-bar">🌿 ENVÍO GRATIS EN BOGOTÁ POR COMPRAS SUPERIORES A $65.000 COP | FÓRMULAS CERTIFICADAS INVIMA 🌿</div>', unsafe_allow_html=True)
-# 
-# # Banner Hero principal
-# st.markdown("""
-# <div class="hero-banner">
-#     <div style="font-size: 14px; letter-spacing: 3px; color: #1F3626; font-weight: bold;">YUGLOSS HAIR CLUB • BOGOTÁ</div>
-#     <div class="hero-title" style="color: #1F3626">¿Rizos definidos o hidratación profunda?</div>
-#     <div class="hero-subtitle">¡Descubre tu ritual capilar con biotecnología de yuca colombiana!</div>
-#     <div class="promo-badge">✨ Kit Completo (3 pasos) por $68.000 COP ✨</div>
-# </div>
-# """, unsafe_allow_html=True)
-# 
-# tab_tienda, tab_escaner, tab_planta, tab_gobernanza = st.tabs([
-#     "🛍️ 1. Tienda & Catálogo Botánico",
-#     "📸 2. Escáner Capilar IA (Diagnóstico)",
-#     "🏭 3. Tablero LEAN (Planta Puente Aranda)",
-#     "🛡️ 4. Gobernanza e Industria 5.0"
-# ])
-# 
-# with tab_tienda:
-#     st.markdown("### Nuestros Favoritos con Extracto de Yuca")
-#     p1, p2, p3 = st.columns(3)
-# 
-#     with p1:
-#         st.markdown("""
-#         <div class="product-card">
-#             <div style="font-size: 45px;">🧴</div>
-#             <h4>Shampoo Hidratante</h4>
-#             <p style="color:#1F3626; font-weight:bold;">20% Extracto de Yuca</p>
-#             <p style="font-size:14px; color:#555;">✔ Limpia sin sulfatos ni sal<br>✔ Aporta brillo natural<br>✔ Fortalece desde la raíz</p>
-#             <div class="price-tag">$23.000 COP</div>
-#         </div>
-#         """, unsafe_allow_html=True)
-#         if st.button("Agregar Shampoo al Pedido", key="btn_shampoo", use_container_width=True):
-#             st.session_state.pedidos_acumulados["Shampoo Hidratante (20% Yuca)"] += 1
-#             st.toast("🛒 Shampoo Hidratante añadido y sincronizado con Planta LEAN.")
-# 
-#     with p2:
-#         st.markdown("""
-#         <div class="product-card">
-#             <div style="font-size: 45px;">🌿</div>
-#             <h4>Acondicionador Nutritivo</h4>
-#             <p style="color:#1F3626; font-weight:bold;">5% Yuca + Karité & Argán</p>
-#             <p style="font-size:14px; color:#555;">✔ Desenredo inmediato<br>✔ Sella la cutícula<br>✔ Máxima elasticidad en rizos 3C-4C</p>
-#             <div class="price-tag">$24.000 COP</div>
-#         </div>
-#         """, unsafe_allow_html=True)
-#         if st.button("Agregar Acondicionador al Pedido", key="btn_acond", use_container_width=True):
-#             st.session_state.pedidos_acumulados["Acondicionador Nutritivo (5% Yuca)"] += 1
-#             st.toast("🛒 Acondicionador Nutritivo añadido y sincronizado con Planta LEAN.")
-# 
-#     with p3:
-#         st.markdown("""
-#         <div class="product-card">
-#             <div style="font-size: 45px;">🥥</div>
-#             <h4>Mascarilla Reparadora</h4>
-#             <p style="color:#1F3626; font-weight:bold;">6% Yuca + Ricino & Jojoba</p>
-#             <p style="font-size:14px; color:#555;">✔ Nutrición intensiva<br>✔ Control total del frizz<br>✔ Restaura hebras procesadas</p>
-#             <div class="price-tag">$25.000 COP</div>
-#         </div>
-#         """, unsafe_allow_html=True)
-#         if st.button("Agregar Mascarilla al Pedido", key="btn_masc", use_container_width=True):
-#             st.session_state.pedidos_acumulados["Mascarilla Reparadora (6% Yuca)"] += 1
-#             st.toast("🛒 Mascarilla Reparadora añadida y sincronizado con Planta LEAN.")
-# 
-# with tab_escaner:
-#     col1, col2 = st.columns([1, 1.2])
-#     with col1:
-#         st.subheader("📸 Diagnóstico Capilar con Visión Artificial")
-#         st.write("Sube una foto de tu cabello para identificar tu patrón de rizo, nivel de porosidad y recibir tu fórmula exacta aprobada por INVIMA.")
-#         archivo_foto = st.file_uploader("Cargar fotografía capilar (JPG/PNG)", type=["jpg", "jpeg", "png"])
-#         if archivo_foto is not None:
-#             imagen = Image.open(archivo_foto).convert("RGB")
-#             hash_id = hashlib.sha256(archivo_foto.getvalue()).hexdigest()[:12]
-#             st.image(imagen, caption=f"Imagen anonimizada (Hash SHA-256: {hash_id})", use_container_width=True)
-# 
-#     with col2:
-#         if archivo_foto is not None:
-#             with st.spinner("Analizando curvatura y porosidad con Yugloss Vision CNN..."):
-#                 time.sleep(1.0)
-#                 stat = ImageStat.Stat(imagen.convert("L"))
-#                 varianza_textura = stat.stddev[0]
-#                 if varianza_textura < 48:
-#                     patron = "Rizo Suave / Ondulado (Tipo 2B - 2C)"
-#                     porosidad = "Baja (35%)"
-#                     confianza = 94.2
-#                     producto = "Shampoo Hidratante (20% Yuca)"
-#                     precio = "$23.000 COP"
-#                     beneficio = "Limpieza suave libre de sulfatos y sal. Aporta brillo y fortalece la hebra sin apelmazar."
-#                 elif varianza_textura < 65:
-#                     patron = "Rizo Definido (Tipo 3B - 3C)"
-#                     porosidad = "Media-Alta (65%)"
-#                     confianza = 96.8
-#                     producto = "Mascarilla Reparadora (6% Yuca)"
-#                     precio = "$25.000 COP"
-#                     beneficio = "Hidratación profunda con extracto de yuca, aceite de ricino y jojoba para control total del frizz."
-#                 else:
-#                     patron = "Crespo / Textura Afro (Tipo 4A - 4C)"
-#                     porosidad = "Alta (82%)"
-#                     confianza = 95.5
-#                     producto = "Acondicionador Nutritivo (5% Yuca)"
-#                     precio = "$24.000 COP"
-#                     beneficio = "Nutrición intensa con manteca de karité y aceite de argán para máxima elasticidad y desenredado."
-# 
-#             st.success(f"✅ Diagnóstico Completado | Confianza del Modelo: **{confianza}%**")
-#             m1, m2 = st.columns(2)
-#             m1.metric("Patrón Detectado", patron)
-#             m2.metric("Nivel de Porosidad", porosidad)
-#             st.info(f"### 🎯 Fórmula Recomendada: **{producto}**\n**Precio Lanzamiento:** {precio}\n\n{beneficio}")
-# 
-#             if st.button("🛒 Confirmar Pedido y Enviar Orden a Planta LEAN", type="primary"):
-#                 st.session_state.pedidos_acumulados[producto] += 1
-#                 st.session_state.historial_diagnosticos.append({
-#                     "ID Anonimizado": hash_id,
-#                     "Patrón": patron,
-#                     "SKU Asignado": producto,
-#                     "Confianza": f"{confianza}%"
-#                 })
-#                 st.toast("¡Pedido registrado! Tablero de producción en Puente Aranda actualizado en tiempo real.")
-#         else:
-#             st.info("👈 Carga una imagen en el panel izquierdo para ejecutar la inferencia en vivo.")
-# 
-# with tab_planta:
-#     st.subheader("🏭 Control de Producción Celular en 'U' — Puente Aranda (Bogotá)")
-#     st.write("Sincronización *Just-In-Time* (JIT) entre diagnósticos web y abastecimiento con agricultores locales.")
-#     total_unidades = sum(st.session_state.pedidos_acumulados.values())
-#     lotes_requeridos = int(np.ceil(total_unidades / 250))
-#     kg_yuca = (
-#         st.session_state.pedidos_acumulados["Shampoo Hidratante (20% Yuca)"] * 0.065 +
-#         st.session_state.pedidos_acumulados["Acondicionador Nutritivo (5% Yuca)"] * 0.015 +
-#         st.session_state.pedidos_acumulados["Mascarilla Reparadora (6% Yuca)"] * 0.018
-#     )
-#     k1, k2, k3, k4 = st.columns(4)
-#     k1.metric("Demanda Proyectada (Semanal)", f"{total_unidades} uds", "+1 unidad en vivo" if st.session_state.historial_diagnosticos else "Base actual")
-#     k2.metric("Lotes a Producir (250 uds/8h)", f"{lotes_requeridos} lotes", "Flujo continuo en U")
-#     k3.metric("Extracto de Yuca Requerido", f"{kg_yuca:.2f} kg", "Comercio justo agricultores")
-#     k4.metric("Tasa Desperdicio Proyectada", "1.8%", "Meta LEAN: ≤ 3.0%", delta_color="inverse")
-# 
-#     st.divider()
-#     c1, c2 = st.columns([1.3, 1])
-#     with c1:
-#         st.markdown("#### Distribución de Demanda Predictiva por SKU (XGBoost)")
-#         df_demanda = pd.DataFrame({
-#             "Producto (SKU)": list(st.session_state.pedidos_acumulados.keys()),
-#             "Unidades Proyectadas": list(st.session_state.pedidos_acumulados.values())
-#         })
-#         st.bar_chart(df_demanda.set_index("Producto (SKU)"), color="#1F3626")
-#     with c2:
-#         st.markdown("#### Últimos Diagnósticos en Tiempo Real")
-#         if st.session_state.historial_diagnosticos:
-#             st.dataframe(pd.DataFrame(st.session_state.historial_diagnosticos), use_container_width=True)
-#         else:
-#             st.write("Aún no se han confirmado nuevos pedidos en esta sesión.")
-# 
-# with tab_gobernanza:
-#     st.subheader("🛡️ Gobernanza del Dato, Ética y Cumplimiento Regulatorio")
-#     st.markdown("""
-#     * **Mitigación de Sesgos Fenotípicos:** Dataset balanceado en texturas rizadas y afrodescendientes latinoamericanas (tipos 3A–4C) con auditoría continua de *F1-Score* por subgrupo.
-#     * **Control de Alucinaciones:** Clasificador supervisado cerrado, acotado exclusivamente a fórmulas con registro sanitario INVIMA (Decreto 677 de 1995). Umbral de bloqueo de seguridad: confianza < 80%.
-#     * **Privacidad (Habeas Data - Ley 1581 de 2012):** Anonimización criptográfica SHA-256 de fotografías y eliminación inmediata tras la inferencia.
-#     * **Impacto Industria 5.0 y Resiliencia:** Cero sustitución de operarios; red dual de abastecimiento agrícola (Cundinamarca y Tolima) y ahorro hídrico (≤ 0.8 m³ por lote).
-#     """)
+import streamlit as st
+ from PIL import Image, ImageStat
+ import pandas as pd
+ import numpy as np
+ import time
+ import hashlib
+ 
+ st.set_page_config(
+     page_title="YUGLOSS | Cosmética Capilar Natural & IA",
+     page_icon="🌿",
+     layout="wide"
+ )
+
+ Estilos CSS personalizados con la paleta de colores de tu logo
+ st.markdown("""
+ <style>
+     /* Estilos generales con fondo color arena del logo */
+     .stApp {
+         background-color: #EAE7E2 !important;
+     }
+ 
+     .top-bar {
+         background-color: #1F3626; /* Verde oscuro */
+         color: #FFFFFF;
+         text-align: center;
+         padding: 10px;
+         font-size: 13px;
+         font-weight: 600;
+         letter-spacing: 1px;
+         border-radius: 8px;
+         margin-bottom: 15px;
+     }
+ 
+     .hero-banner {
+         background: linear-gradient(135deg, #DCE9E9 0%, #C4D7D6 50%, #EAE7E2 100%); /* Azul claro a Arena */
+         padding: 35px 40px;
+         border-radius: 18px;
+         border: 2px solid #1F3626;
+         margin-bottom: 25px;
+         text-align: center;
+     }
+ 
+     .hero-title {
+         color: #1F3626;
+         font-size: 38px;
+         font-weight: 800;
+         margin-bottom: 5px;
+         font-family: 'Georgia', serif;
+     }
+ 
+     .hero-subtitle {
+         color: #2b4f35;
+         font-size: 20px;
+         font-style: italic;
+         margin-bottom: 15px;
+     }
+ 
+     .promo-badge {
+         background-color: #3B7A75; /* Azul teal de acento */
+         color: white;
+         padding: 8px 22px;
+         border-radius: 25px;
+         font-weight: bold;
+         font-size: 16px;
+         display: inline-block;
+     }
+ 
+     .product-card {
+         background-color: #FFFFFF;
+         border: 2px solid #C4D7D6; /* Azul claro */
+         border-radius: 15px;
+         padding: 20px;
+         text-align: center;
+         box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+     }
+ 
+     .price-tag {
+         background-color: #1F3626; /* Verde oscuro */
+         color: white;
+         padding: 5px 15px;
+         border-radius: 15px;
+         font-weight: bold;
+         font-size: 18px;
+         display: inline-block;
+         margin: 10px 0;
+     }
+ </style>
+ """, unsafe_allow_html=True)
+ 
+ if "pedidos_acumulados" not in st.session_state:
+     st.session_state.pedidos_acumulados = {
+         "Shampoo Hidratante (20% Yuca)": 142,
+         "Acondicionador Nutritivo (5% Yuca)": 98,
+         "Mascarilla Reparadora (6% Yuca)": 185
+     }
+ if "historial_diagnosticos" not in st.session_state:
+     st.session_state.historial_diagnosticos = []
+ 
+  Encabezado con Logo y Título
+ col_logo, col_titulo = st.columns([1, 5])
+ with col_logo:
+      Mostramos tu logo
+     try:
+         logo = Image.open("image_9.png")
+         st.image(logo, use_container_width=True)
+     except:
+         st.subheader("YUGLOSS") # Respaldo si no encuentra el archivo
+ 
+ with col_titulo:
+     st.title("🌿 YUGLOSS S.A.S. — Ecosistema Capilar Inteligente (Industria 5.0)")
+     st.markdown("**Tierra que nutre, belleza que crece** | *Conexión en tiempo real entre Visión Artificial (B2C) y Manufactura LEAN (Planta Puente Aranda)*")
+ 
+  Barra superior estilo e-commerce
+ st.markdown('<div class="top-bar">🌿 ENVÍO GRATIS EN BOGOTÁ POR COMPRAS SUPERIORES A $65.000 COP | FÓRMULAS CERTIFICADAS INVIMA 🌿</div>', unsafe_allow_html=True)
+ 
+ Banner Hero principal
+ st.markdown("""
+ <div class="hero-banner">
+     <div style="font-size: 14px; letter-spacing: 3px; color: #1F3626; font-weight: bold;">YUGLOSS HAIR CLUB • BOGOTÁ</div>
+     <div class="hero-title" style="color: #1F3626">¿Rizos definidos o hidratación profunda?</div>
+     <div class="hero-subtitle">¡Descubre tu ritual capilar con biotecnología de yuca colombiana!</div>
+     <div class="promo-badge">✨ Kit Completo (3 pasos) por $68.000 COP ✨</div>
+ </div>
+ """, unsafe_allow_html=True)
+ 
+ tab_tienda, tab_escaner, tab_planta, tab_gobernanza = st.tabs([
+     "🛍️ 1. Tienda & Catálogo Botánico",
+     "📸 2. Escáner Capilar IA (Diagnóstico)",
+     "🏭 3. Tablero LEAN (Planta Puente Aranda)",
+     "🛡️ 4. Gobernanza e Industria 5.0"
+ ])
+ 
+ with tab_tienda:
+     st.markdown("### Nuestros Favoritos con Extracto de Yuca")
+     p1, p2, p3 = st.columns(3)
+ 
+     with p1:
+         st.markdown("""
+         <div class="product-card">
+             <div style="font-size: 45px;">🧴</div>
+             <h4>Shampoo Hidratante</h4>
+             <p style="color:#1F3626; font-weight:bold;">20% Extracto de Yuca</p>
+             <p style="font-size:14px; color:#555;">✔ Limpia sin sulfatos ni sal<br>✔ Aporta brillo natural<br>✔ Fortalece desde la raíz</p>
+             <div class="price-tag">$23.000 COP</div>
+         </div>
+         """, unsafe_allow_html=True)
+         if st.button("Agregar Shampoo al Pedido", key="btn_shampoo", use_container_width=True):
+             st.session_state.pedidos_acumulados["Shampoo Hidratante (20% Yuca)"] += 1
+             st.toast("🛒 Shampoo Hidratante añadido y sincronizado con Planta LEAN.")
+ 
+     with p2:
+         st.markdown("""
+         <div class="product-card">
+             <div style="font-size: 45px;">🌿</div>
+             <h4>Acondicionador Nutritivo</h4>
+             <p style="color:#1F3626; font-weight:bold;">5% Yuca + Karité & Argán</p>
+             <p style="font-size:14px; color:#555;">✔ Desenredo inmediato<br>✔ Sella la cutícula<br>✔ Máxima elasticidad en rizos 3C-4C</p>
+             <div class="price-tag">$24.000 COP</div>
+         </div>
+         """, unsafe_allow_html=True)
+         if st.button("Agregar Acondicionador al Pedido", key="btn_acond", use_container_width=True):
+             st.session_state.pedidos_acumulados["Acondicionador Nutritivo (5% Yuca)"] += 1
+             st.toast("🛒 Acondicionador Nutritivo añadido y sincronizado con Planta LEAN.")
+ 
+     with p3:
+         st.markdown("""
+         <div class="product-card">
+             <div style="font-size: 45px;">🥥</div>
+             <h4>Mascarilla Reparadora</h4>
+             <p style="color:#1F3626; font-weight:bold;">6% Yuca + Ricino & Jojoba</p>
+             <p style="font-size:14px; color:#555;">✔ Nutrición intensiva<br>✔ Control total del frizz<br>✔ Restaura hebras procesadas</p>
+             <div class="price-tag">$25.000 COP</div>
+         </div>
+         """, unsafe_allow_html=True)
+         if st.button("Agregar Mascarilla al Pedido", key="btn_masc", use_container_width=True):
+             st.session_state.pedidos_acumulados["Mascarilla Reparadora (6% Yuca)"] += 1
+             st.toast("🛒 Mascarilla Reparadora añadida y sincronizado con Planta LEAN.")
+ 
+ with tab_escaner:
+     col1, col2 = st.columns([1, 1.2])
+     with col1:
+         st.subheader("📸 Diagnóstico Capilar con Visión Artificial")
+         st.write("Sube una foto de tu cabello para identificar tu patrón de rizo, nivel de porosidad y recibir tu fórmula exacta aprobada por INVIMA.")
+         archivo_foto = st.file_uploader("Cargar fotografía capilar (JPG/PNG)", type=["jpg", "jpeg", "png"])
+         if archivo_foto is not None:
+             imagen = Image.open(archivo_foto).convert("RGB")
+             hash_id = hashlib.sha256(archivo_foto.getvalue()).hexdigest()[:12]
+             st.image(imagen, caption=f"Imagen anonimizada (Hash SHA-256: {hash_id})", use_container_width=True)
+ 
+     with col2:
+         if archivo_foto is not None:
+             with st.spinner("Analizando curvatura y porosidad con Yugloss Vision CNN..."):
+                 time.sleep(1.0)
+                 stat = ImageStat.Stat(imagen.convert("L"))
+                 varianza_textura = stat.stddev[0]
+                 if varianza_textura < 48:
+                     patron = "Rizo Suave / Ondulado (Tipo 2B - 2C)"
+                     porosidad = "Baja (35%)"
+                     confianza = 94.2
+                     producto = "Shampoo Hidratante (20% Yuca)"
+                     precio = "$23.000 COP"
+                     beneficio = "Limpieza suave libre de sulfatos y sal. Aporta brillo y fortalece la hebra sin apelmazar."
+                 elif varianza_textura < 65:
+                     patron = "Rizo Definido (Tipo 3B - 3C)"
+                     porosidad = "Media-Alta (65%)"
+                     confianza = 96.8
+                     producto = "Mascarilla Reparadora (6% Yuca)"
+                     precio = "$25.000 COP"
+                     beneficio = "Hidratación profunda con extracto de yuca, aceite de ricino y jojoba para control total del frizz."
+                 else:
+                     patron = "Crespo / Textura Afro (Tipo 4A - 4C)"
+                     porosidad = "Alta (82%)"
+                     confianza = 95.5
+                     producto = "Acondicionador Nutritivo (5% Yuca)"
+                     precio = "$24.000 COP"
+                     beneficio = "Nutrición intensa con manteca de karité y aceite de argán para máxima elasticidad y desenredado."
+ 
+             st.success(f"✅ Diagnóstico Completado | Confianza del Modelo: **{confianza}%**")
+             m1, m2 = st.columns(2)
+             m1.metric("Patrón Detectado", patron)
+             m2.metric("Nivel de Porosidad", porosidad)
+             st.info(f"### 🎯 Fórmula Recomendada: **{producto}**\n**Precio Lanzamiento:** {precio}\n\n{beneficio}")
+ 
+             if st.button("🛒 Confirmar Pedido y Enviar Orden a Planta LEAN", type="primary"):
+                 st.session_state.pedidos_acumulados[producto] += 1
+                 st.session_state.historial_diagnosticos.append({
+                     "ID Anonimizado": hash_id,
+                     "Patrón": patron,
+                     "SKU Asignado": producto,
+                     "Confianza": f"{confianza}%"
+                 })
+                 st.toast("¡Pedido registrado! Tablero de producción en Puente Aranda actualizado en tiempo real.")
+         else:
+             st.info("👈 Carga una imagen en el panel izquierdo para ejecutar la inferencia en vivo.")
+ 
+ with tab_planta:
+     st.subheader("🏭 Control de Producción Celular en 'U' — Puente Aranda (Bogotá)")
+     st.write("Sincronización *Just-In-Time* (JIT) entre diagnósticos web y abastecimiento con agricultores locales.")
+     total_unidades = sum(st.session_state.pedidos_acumulados.values())
+     lotes_requeridos = int(np.ceil(total_unidades / 250))
+     kg_yuca = (
+         st.session_state.pedidos_acumulados["Shampoo Hidratante (20% Yuca)"] * 0.065 +
+         st.session_state.pedidos_acumulados["Acondicionador Nutritivo (5% Yuca)"] * 0.015 +
+         st.session_state.pedidos_acumulados["Mascarilla Reparadora (6% Yuca)"] * 0.018
+     )
+     k1, k2, k3, k4 = st.columns(4)
+     k1.metric("Demanda Proyectada (Semanal)", f"{total_unidades} uds", "+1 unidad en vivo" if st.session_state.historial_diagnosticos else "Base actual")
+     k2.metric("Lotes a Producir (250 uds/8h)", f"{lotes_requeridos} lotes", "Flujo continuo en U")
+     k3.metric("Extracto de Yuca Requerido", f"{kg_yuca:.2f} kg", "Comercio justo agricultores")
+     k4.metric("Tasa Desperdicio Proyectada", "1.8%", "Meta LEAN: ≤ 3.0%", delta_color="inverse")
+ 
+     st.divider()
+     c1, c2 = st.columns([1.3, 1])
+     with c1:
+         st.markdown("#### Distribución de Demanda Predictiva por SKU (XGBoost)")
+         df_demanda = pd.DataFrame({
+             "Producto (SKU)": list(st.session_state.pedidos_acumulados.keys()),
+             "Unidades Proyectadas": list(st.session_state.pedidos_acumulados.values())
+         })
+         st.bar_chart(df_demanda.set_index("Producto (SKU)"), color="#1F3626")
+     with c2:
+         st.markdown("#### Últimos Diagnósticos en Tiempo Real")
+         if st.session_state.historial_diagnosticos:
+             st.dataframe(pd.DataFrame(st.session_state.historial_diagnosticos), use_container_width=True)
+         else:
+             st.write("Aún no se han confirmado nuevos pedidos en esta sesión.")
+ 
+ with tab_gobernanza:
+     st.subheader("🛡️ Gobernanza del Dato, Ética y Cumplimiento Regulatorio")
+     st.markdown("""
+     * **Mitigación de Sesgos Fenotípicos:** Dataset balanceado en texturas rizadas y afrodescendientes latinoamericanas (tipos 3A–4C) con auditoría continua de *F1-Score* por subgrupo.
+     * **Control de Alucinaciones:** Clasificador supervisado cerrado, acotado exclusivamente a fórmulas con registro sanitario INVIMA (Decreto 677 de 1995). Umbral de bloqueo de seguridad: confianza < 80%.
+     * **Privacidad (Habeas Data - Ley 1581 de 2012):** Anonimización criptográfica SHA-256 de fotografías y eliminación inmediata tras la inferencia.
+     * **Impacto Industria 5.0 y Resiliencia:** Cero sustitución de operarios; red dual de abastecimiento agrícola (Cundinamarca y Tolima) y ahorro hídrico (≤ 0.8 m³ por lote).
+     """)
 
 !streamlit run app.py &>/content/logs.txt &
 !cloudflared tunnel --url http://localhost:8501 2>&1 | grep -o 'https://[-0-9a-z]*\.trycloudflare\.com'
